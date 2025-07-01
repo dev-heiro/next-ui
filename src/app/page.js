@@ -1,95 +1,110 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState } from "react";
+
+export default function FlaskTestPage() {
+  const [hello, setHello] = useState("");
+  const [sumResult, setSumResult] = useState(null);
+  const [echoResponse, setEchoResponse] = useState(null);
+
+  const backendUrl = "http://43.201.115.191:5000"; // EC2 퍼블릭 IP로 바꿔줘
+
+  const fetchHello = async () => {
+    const res = await fetch(`${backendUrl}/api/hello`);
+    const data = await res.json();
+    setHello(data.message);
+  };
+
+  const fetchSum = async () => {
+    const res = await fetch(`${backendUrl}/api/add?a=5&b=7`);
+    const data = await res.json();
+    setSumResult(data.result);
+  };
+
+  const sendEcho = async () => {
+    const res = await fetch(`${backendUrl}/api/echo`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ user: "HEIRO", role: "Test" }),
+    });
+    const data = await res.json();
+    setEchoResponse(data);
+  };
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>src/app/page.js</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <div style={styles.container}>
+      <h1 style={styles.heading}>🧪 Flask API 테스트</h1>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      <div style={styles.section}>
+        <button style={styles.button} onClick={fetchHello}>
+          /api/hello 호출
+        </button>
+        {hello && <p style={styles.result}>응답: {hello}</p>}
+      </div>
+
+      <div style={styles.section}>
+        <button style={styles.button} onClick={fetchSum}>
+          /api/add?a=5&b=7 호출
+        </button>
+        {sumResult !== null && (
+          <p style={styles.result}>합계 결과: {sumResult}</p>
+        )}
+      </div>
+
+      <div style={styles.section}>
+        <button style={styles.button} onClick={sendEcho}>
+          /api/echo POST 호출
+        </button>
+        {echoResponse && (
+          <pre style={styles.result}>
+            {JSON.stringify(echoResponse, null, 2)}
+          </pre>
+        )}
+      </div>
     </div>
   );
 }
+
+const styles = {
+  container: {
+    backgroundColor: "#111",
+    color: "#f5f5f5",
+    minHeight: "100vh",
+    padding: "60px 20px",
+    fontFamily: "Menlo, monospace",
+    maxWidth: "700px",
+    margin: "0 auto",
+  },
+  heading: {
+    fontSize: "28px",
+    marginBottom: "40px",
+    borderBottom: "1px solid #444",
+    paddingBottom: "10px",
+    letterSpacing: "2px",
+    textAlign: "center",
+  },
+  section: {
+    marginBottom: "40px",
+  },
+  button: {
+    backgroundColor: "#fff",
+    color: "#000",
+    border: "none",
+    padding: "10px 20px",
+    fontSize: "16px",
+    borderRadius: "0",
+    cursor: "pointer",
+    fontWeight: "bold",
+    letterSpacing: "1px",
+    transition: "background-color 0.2s ease",
+  },
+  output: {
+    marginTop: "16px",
+    padding: "12px",
+    backgroundColor: "#222",
+    color: "#0f0",
+    fontSize: "14px",
+    borderLeft: "4px solid #0f0",
+    whiteSpace: "pre-wrap",
+  },
+};
