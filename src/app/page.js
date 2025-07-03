@@ -10,9 +10,9 @@ export default function FlaskTestPage() {
   const backendUrl = "http://13.209.99.25";
 
   const fetchHello = async () => {
-    const res = await fetch(`${backendUrl}:8080/api/deploy/ping`);
+    const res = await fetch(`${backendUrl}:8080/api/deploy/status`);
     const data = await res.json();
-    setHello(data.message);
+    setHello(data.status);
   };
 
   const fetchSum = async () => {
@@ -33,7 +33,7 @@ export default function FlaskTestPage() {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.heading}>🧪 Flask API 테스트</h1>
+      <h1 style={styles.heading}>API 테스트</h1>
 
       <div style={styles.section}>
         <button style={styles.button} onClick={fetchHello}>
