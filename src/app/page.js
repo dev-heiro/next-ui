@@ -7,7 +7,7 @@ export default function FlaskTestPage() {
   const [sumResult, setSumResult] = useState(null);
   const [echoResponse, setEchoResponse] = useState(null);
 
-  const backendUrl = "http://43.201.115.191:5000"; // EC2 퍼블릭 IP로 바꿔줘
+  const backendUrl = "http://localhost:8080";
 
   const fetchHello = async () => {
     const res = await fetch(`${backendUrl}/api/hello`);
