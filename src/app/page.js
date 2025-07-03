@@ -7,10 +7,10 @@ export default function FlaskTestPage() {
   const [sumResult, setSumResult] = useState(null);
   const [echoResponse, setEchoResponse] = useState(null);
 
-  const backendUrl = "http://13.209.99.25:8080";
+  const backendUrl = "http://13.209.99.25";
 
   const fetchHello = async () => {
-    const res = await fetch(`${backendUrl}/api/hello`);
+    const res = await fetch(`${backendUrl}:8080/api/deploy/ping`);
     const data = await res.json();
     setHello(data.message);
   };
